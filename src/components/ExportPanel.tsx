@@ -1,14 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { Download, FileText, FileSpreadsheet, Code, CheckCircle } from 'lucide-react';
 import Button from './ui/Button';
-import { ExportConfig, BusinessRule, PrioritySettings } from '@/types';
+import { ExportConfig, BusinessRule, PrioritySettings, Client, Worker, Task } from '@/types';
 import { cn } from '@/lib/utils';
 
 interface ExportPanelProps {
   data: {
-    clients: any[];
-    workers: any[];
-    tasks: any[];
+    clients: Client[];
+    workers: Worker[];
+    tasks: Task[];
   };
   businessRules: BusinessRule[];
   prioritySettings: PrioritySettings;
@@ -58,7 +58,7 @@ const ExportPanel: React.FC<ExportPanelProps> = ({
       if (exportConfig.format === 'json') {
         setExportStatus('Creating JSON export...');
         
-        const exportData: any = {
+        const exportDataObj: Record<string, unknown> = {
           metadata: {
             exportDate: new Date().toISOString(),
             version: '1.0'
@@ -71,7 +71,7 @@ const ExportPanel: React.FC<ExportPanelProps> = ({
         };
         
         if (exportConfig.includeBusinessRules) {
-          exportData.configuration = {
+          exportDataObj.configuration = {
             businessRules: businessRules.filter(rule => rule.active),
             prioritySettings,
             configVersion: '1.0',
@@ -79,7 +79,7 @@ const ExportPanel: React.FC<ExportPanelProps> = ({
           };
         }
         
-        const jsonContent = JSON.stringify(exportData, null, 2);
+        const jsonContent = JSON.stringify(exportDataObj, null, 2);
         downloadFile(jsonContent, `data-alchemist-export-${timestamp}.json`, 'application/json');
       }
       
@@ -98,7 +98,7 @@ const ExportPanel: React.FC<ExportPanelProps> = ({
       setExportStatus('Export completed successfully!');
       setTimeout(() => setExportStatus(null), 3000);
       
-    } catch (error) {
+    } catch {
       setExportStatus('Export failed. Please try again.');
       setTimeout(() => setExportStatus(null), 3000);
     } finally {
@@ -168,7 +168,7 @@ const ExportPanel: React.FC<ExportPanelProps> = ({
                 return (
                   <button
                     key={format.value}
-                    onClick={() => setExportConfig(prev => ({ ...prev, format: format.value as any }))}
+                    onClick={() => setExportConfig(prev => ({ ...prev, format: format.value as ExportConfig['format'] }))}
                     className={cn(
                       "p-4 border-2 rounded-lg text-left transition-all",
                       exportConfig.format === format.value

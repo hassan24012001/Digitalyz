@@ -7,19 +7,19 @@ class DataValidator {
   private warnings: ValidationError[] = [];
 
   // Main validation function
-  validate(data: any[], dataType: DataType, allData?: { clients: Client[], workers: Worker[], tasks: Task[] }): ValidationResult {
+  validate(data: (Client | Worker | Task)[], dataType: DataType, allData?: { clients: Client[], workers: Worker[], tasks: Task[] }): ValidationResult {
     this.errors = [];
     this.warnings = [];
 
     switch (dataType) {
       case 'clients':
-        this.validateClients(data as Client[], allData);
+        this.validateClients(data as Client[]);
         break;
       case 'workers':
-        this.validateWorkers(data as Worker[], allData);
+        this.validateWorkers(data as Worker[]);
         break;
       case 'tasks':
-        this.validateTasks(data as Task[], allData);
+        this.validateTasks(data as Task[]);
         break;
     }
 
@@ -48,7 +48,7 @@ class DataValidator {
   }
 
   // Helper methods for adding errors and warnings
-  private addError(entity: DataType, row: number, column: string, message: string, value: any, suggestion?: string): void {
+  private addError(entity: DataType, row: number, column: string, message: string, value: unknown, suggestion?: string): void {
     this.errors.push({
       id: generateId(),
       type: 'error',
@@ -63,7 +63,7 @@ class DataValidator {
     });
   }
 
-  private addWarning(entity: DataType, row: number, column: string, message: string, value: any, suggestion?: string): void {
+  private addWarning(entity: DataType, row: number, column: string, message: string, value: unknown, suggestion?: string): void {
     this.warnings.push({
       id: generateId(),
       type: 'warning',
@@ -79,7 +79,7 @@ class DataValidator {
   }
 
   // Validate clients data
-  private validateClients(clients: Client[], allData?: any): void {
+  private validateClients(clients: Client[]): void {
     const clientIds = new Set<string>();
 
     clients.forEach((client, index) => {
@@ -138,7 +138,7 @@ class DataValidator {
   }
 
   // Validate workers data
-  private validateWorkers(workers: Worker[], allData?: any): void {
+  private validateWorkers(workers: Worker[]): void {
     const workerIds = new Set<string>();
 
     workers.forEach((worker, index) => {
@@ -209,7 +209,7 @@ class DataValidator {
   }
 
   // Validate tasks data
-  private validateTasks(tasks: Task[], allData?: any): void {
+  private validateTasks(tasks: Task[]): void {
     const taskIds = new Set<string>();
 
     tasks.forEach((task, index) => {
@@ -336,7 +336,7 @@ class DataValidator {
 export const dataValidator = new DataValidator();
 
 // Auto-fix suggestions
-export function generateAutoFix(error: ValidationError): any {
+export function generateAutoFix(error: ValidationError): unknown {
   switch (error.column) {
     case 'PriorityLevel':
       if (typeof error.value === 'number') {

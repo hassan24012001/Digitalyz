@@ -5,7 +5,7 @@ export interface Client {
   PriorityLevel: number; // 1-5
   RequestedTaskIDs: string[];
   GroupTag?: string;
-  AttributesJSON?: Record<string, any>;
+  AttributesJSON?: Record<string, unknown>;
 }
 
 export interface Worker {
@@ -37,7 +37,7 @@ export interface ValidationError {
   row: number;
   column: string;
   message: string;
-  value: any;
+  value: unknown;
   suggestion?: string;
   autoFixAvailable?: boolean;
 }
@@ -70,14 +70,14 @@ export interface BusinessRule {
 export interface RuleCondition {
   field: string;
   operator: 'equals' | 'not_equals' | 'greater_than' | 'less_than' | 'contains' | 'in' | 'not_in';
-  value: any;
+  value: unknown;
   entity: 'clients' | 'workers' | 'tasks';
 }
 
 export interface RuleAction {
   type: 'assign' | 'restrict' | 'prioritize' | 'group';
   target: string;
-  value: any;
+  value: unknown;
 }
 
 // Priority settings interface
@@ -92,7 +92,7 @@ export interface PrioritySettings {
 // File processing interfaces
 export interface FileProcessingResult {
   success: boolean;
-  data: any[];
+  data: Record<string, unknown>[];
   headers: string[];
   mappedHeaders: Record<string, string>;
   validation: ValidationResult;

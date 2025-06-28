@@ -5,10 +5,10 @@ import { ValidationError, DataType } from '@/types';
 import { cn } from '@/lib/utils';
 
 interface DataGridProps {
-  data: any[];
+  data: Record<string, unknown>[];
   dataType: DataType;
   validationErrors?: ValidationError[];
-  onDataChange: (data: any[]) => void;
+  onDataChange: (data: Record<string, unknown>[]) => void;
   isReadOnly?: boolean;
 }
 
@@ -19,7 +19,6 @@ interface EditingCell {
 
 const DataGrid: React.FC<DataGridProps> = ({
   data,
-  dataType,
   validationErrors = [],
   onDataChange,
   isReadOnly = false
@@ -54,8 +53,11 @@ const DataGrid: React.FC<DataGridProps> = ({
         const aValue = a[sortConfig.key];
         const bValue = b[sortConfig.key];
         
-        if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-        if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+        const aStr = String(aValue || '');
+        const bStr = String(bValue || '');
+        
+        if (aStr < bStr) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aStr > bStr) return sortConfig.direction === 'asc' ? 1 : -1;
         return 0;
       });
     }
@@ -99,7 +101,7 @@ const DataGrid: React.FC<DataGridProps> = ({
     const column = editingCell.column;
     
     // Parse value based on field type
-    let parsedValue: any = editValue;
+    let parsedValue: unknown = editValue;
     
     // Handle arrays (skills, task IDs, etc.)
     if (column.includes('Skills') || column.includes('TaskIDs') || column.includes('Phases')) {
@@ -134,7 +136,7 @@ const DataGrid: React.FC<DataGridProps> = ({
   const addRow = useCallback(() => {
     if (isReadOnly) return;
     
-    const newRow: any = {};
+    const newRow: Record<string, unknown> = {};
     columns.forEach(column => {
       newRow[column] = '';
     });
@@ -150,7 +152,7 @@ const DataGrid: React.FC<DataGridProps> = ({
   }, [data, onDataChange, isReadOnly]);
 
   // Render cell content
-  const renderCell = useCallback((rowIndex: number, column: string, value: any) => {
+  const renderCell = useCallback((rowIndex: number, column: string, value: unknown) => {
     const cellErrors = getCellErrors(rowIndex, column);
     const hasErrors = cellErrors.length > 0;
     const isEditing = editingCell?.row === rowIndex && editingCell?.column === column;

@@ -102,7 +102,7 @@ function mapHeaders(headers: string[], dataType: DataType): Record<string, strin
 }
 
 // Data type conversion and cleaning
-function convertValue(value: any, fieldName: string): any {
+function convertValue(value: unknown, fieldName: string): unknown {
   if (value === null || value === undefined || value === '') return null;
   
   const stringValue = String(value).trim();
@@ -150,7 +150,7 @@ function convertValue(value: any, fieldName: string): any {
 }
 
 // Parse CSV files
-async function parseCSV(file: File): Promise<any[]> {
+async function parseCSV(file: File): Promise<Record<string, unknown>[]> {
   return new Promise((resolve, reject) => {
     Papa.parse(file, {
       header: true,
@@ -159,7 +159,7 @@ async function parseCSV(file: File): Promise<any[]> {
         if (results.errors.length > 0) {
           reject(new Error(results.errors[0].message));
         } else {
-          resolve(results.data);
+          resolve(results.data as Record<string, unknown>[]);
         }
       },
       error: (error) => reject(error)
@@ -168,7 +168,7 @@ async function parseCSV(file: File): Promise<any[]> {
 }
 
 // Parse XLSX files
-async function parseXLSX(file: File): Promise<any[]> {
+async function parseXLSX(file: File): Promise<Record<string, unknown>[]> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     
@@ -178,7 +178,7 @@ async function parseXLSX(file: File): Promise<any[]> {
         const workbook = XLSX.read(data, { type: 'binary' });
         const firstSheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[firstSheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        const jsonData = XLSX.utils.sheet_to_json(worksheet) as Record<string, unknown>[];
         resolve(jsonData);
       } catch (error) {
         reject(error);
@@ -208,9 +208,9 @@ export async function processFile(file: File, dataType: DataType): Promise<FileP
     }
     
     // Parse file based on type
-    let rawData: any[];
+    let rawData: Record<string, unknown>[];
     if (fileExtension === '.csv') {
-      rawData = await parseCSV(file);
+      rawData = await parseCSV(file) as Record<string, unknown>[];
     } else {
       rawData = await parseXLSX(file);
     }
@@ -226,8 +226,8 @@ export async function processFile(file: File, dataType: DataType): Promise<FileP
     const mappedHeaders = mapHeaders(headers, dataType);
     
     // Convert and clean data
-    const processedData = rawData.map((row, index) => {
-      const cleanRow: any = {};
+    const processedData = rawData.map((row) => {
+      const cleanRow: Record<string, unknown> = {};
       
       Object.entries(mappedHeaders).forEach(([standardField, originalHeader]) => {
         const value = row[originalHeader];
@@ -257,7 +257,7 @@ export async function processFile(file: File, dataType: DataType): Promise<FileP
       processingTime
     };
     
-  } catch (error) {
+  } catch {
     return {
       success: false,
       data: [],

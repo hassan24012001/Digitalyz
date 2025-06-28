@@ -3,7 +3,7 @@ import { Upload, File, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import Button from './ui/Button';
 import { processFile } from '@/utils/fileParser';
 import { dataValidator } from '@/utils/validator';
-import { DataType, FileProcessingResult } from '@/types';
+import { DataType, FileProcessingResult, Client, Worker, Task } from '@/types';
 import { formatFileSize } from '@/lib/utils';
 
 interface FileUploadProps {
@@ -73,7 +73,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
       setProcessingStep('Running validations...');
       setProgress(90);
       if (result.success) {
-        const validation = dataValidator.validate(result.data, dataType);
+        const validation = dataValidator.validate(result.data as unknown as (Client | Worker | Task)[], dataType);
         result.validation = validation;
       }
 

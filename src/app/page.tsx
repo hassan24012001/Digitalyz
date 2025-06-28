@@ -87,7 +87,7 @@ export default function Home() {
     }
   }, [fileData]);
 
-  const handleDataChange = useCallback((newData: any[], dataType: DataType) => {
+  const handleDataChange = useCallback((newData: (Client | Worker | Task)[], dataType: DataType) => {
     setFileData(prev => ({ ...prev, [dataType]: newData }));
     
     // Re-validate when data changes
@@ -257,10 +257,10 @@ export default function Home() {
         {/* Data Tabs */}
         {(['clients', 'workers', 'tasks'] as DataType[]).includes(activeTab as DataType) && (
           <DataGrid
-            data={fileData[activeTab as DataType]}
+            data={fileData[activeTab as DataType] as unknown as Record<string, unknown>[]}
             dataType={activeTab as DataType}
             validationErrors={validationResults[activeTab as DataType].errors}
-            onDataChange={(newData) => handleDataChange(newData, activeTab as DataType)}
+            onDataChange={(newData) => handleDataChange(newData as unknown as (Client | Worker | Task)[], activeTab as DataType)}
           />
         )}
 

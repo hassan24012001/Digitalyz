@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
-import { Plus, Edit2, Trash2, Save, X, Settings, Zap } from 'lucide-react';
+import { Plus, Trash2, Save, Settings } from 'lucide-react';
 import Button from './ui/Button';
-import { BusinessRule, RuleCondition, RuleAction, DataType } from '@/types';
+import { BusinessRule, Client, Worker, Task } from '@/types';
 import { cn } from '@/lib/utils';
 import { generateId } from '@/lib/utils';
 
@@ -9,9 +9,9 @@ interface BusinessRulesPanelProps {
   rules: BusinessRule[];
   onRulesChange: (rules: BusinessRule[]) => void;
   availableData: {
-    clients: any[];
-    workers: any[];
-    tasks: any[];
+    clients: Client[];
+    workers: Worker[];
+    tasks: Task[];
   };
   className?: string;
 }
@@ -19,7 +19,6 @@ interface BusinessRulesPanelProps {
 const BusinessRulesPanel: React.FC<BusinessRulesPanelProps> = ({
   rules,
   onRulesChange,
-  availableData,
   className
 }) => {
   const [isCreating, setIsCreating] = useState(false);
@@ -119,7 +118,7 @@ const BusinessRulesPanel: React.FC<BusinessRulesPanelProps> = ({
                 </label>
                 <select
                   value={newRule.type || 'allocation'}
-                  onChange={(e) => setNewRule(prev => ({ ...prev, type: e.target.value as any }))}
+                  onChange={(e) => setNewRule(prev => ({ ...prev, type: e.target.value as BusinessRule['type'] }))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   aria-label="Select rule type"
                   title="Select rule type"
