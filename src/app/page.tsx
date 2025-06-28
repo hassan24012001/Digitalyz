@@ -129,7 +129,7 @@ export default function Home() {
               <div className="flex items-center space-x-2">
                 {status.totalFiles > 0 ? (
                   <>
-                    <span className="text-green-600">✅</span>
+                <span className="text-green-600">✅</span>
                     <span className="text-sm text-green-600">
                       {status.totalFiles} file{status.totalFiles !== 1 ? 's' : ''} loaded
                     </span>
@@ -196,18 +196,18 @@ export default function Home() {
               {(['clients', 'workers', 'tasks'] as DataType[]).map((dataType) => {
                 const config = {
                   clients: {
-                    title: 'Clients Data',
-                    description: 'Client information with priorities and task requests',
+                  title: 'Clients Data',
+                  description: 'Client information with priorities and task requests',
                     emoji: '👥'
-                  },
+                },
                   workers: {
-                    title: 'Workers Data', 
-                    description: 'Worker profiles with skills and availability',
+                  title: 'Workers Data',
+                  description: 'Worker profiles with skills and availability',
                     emoji: '🧑‍💼'
-                  },
+                },
                   tasks: {
-                    title: 'Tasks Data',
-                    description: 'Task definitions with requirements and duration', 
+                  title: 'Tasks Data',
+                  description: 'Task definitions with requirements and duration',
                     emoji: '📋'
                   }
                 }[dataType];
@@ -217,8 +217,8 @@ export default function Home() {
                     <div className="flex items-center space-x-3 mb-4">
                       <span className="text-2xl">{config.emoji}</span>
                       <h3 className="text-lg font-semibold text-gray-900">{config.title}</h3>
-                    </div>
-                    
+                  </div>
+                  
                     <p className="text-sm text-gray-600 mb-6">{config.description}</p>
                     
                     <FileUpload
@@ -233,11 +233,11 @@ export default function Home() {
                     />
 
                     {fileData[dataType].length > 0 && (
-                      <div className="mt-4 pt-4 border-t border-gray-100">
+                  <div className="mt-4 pt-4 border-t border-gray-100">
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-green-600">
                             ✅ {fileData[dataType].length} rows loaded
-                          </span>
+                      </span>
                           <button 
                             onClick={() => setActiveTab(dataType)}
                             className="text-indigo-600 hover:text-indigo-800 font-medium"
